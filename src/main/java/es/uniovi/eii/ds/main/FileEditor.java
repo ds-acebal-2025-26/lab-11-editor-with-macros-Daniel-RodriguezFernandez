@@ -23,13 +23,8 @@ public class FileEditor {
         return macros;
     }
 
-<<<<<<< HEAD
     public void startRecording(String name){
         this.currentMacro = new Macro(name);
-=======
-    public void startRecording(Macro macro){
-        this.currentMacro = macro;
->>>>>>> 5c800db85f0b87850a36c87d9b62bc8da52a5ff7
     }
 
     public Macro getCurrentMacro(){
@@ -41,7 +36,10 @@ public class FileEditor {
     }
 
     public void stopRecording(){
-        currentMacro = null;
+        if(isRecording()){
+            macros.put(currentMacro.name(), currentMacro);
+            currentMacro = null;
+        }
     }
 
     public void record(FileCommand command){
@@ -49,12 +47,4 @@ public class FileEditor {
             currentMacro.addCommand(command);
         }
     }
-<<<<<<< HEAD
-=======
-
-    public void startRecording(Macro macro) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
->>>>>>> 5c800db85f0b87850a36c87d9b62bc8da52a5ff7
 }

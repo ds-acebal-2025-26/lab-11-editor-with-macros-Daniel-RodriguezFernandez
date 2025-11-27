@@ -1,6 +1,8 @@
 package es.uniovi.eii.ds.main;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import es.uniovi.eii.ds.main.command.Delete;
@@ -44,14 +46,18 @@ public class Main {
 				}
 				case "help" -> showHelp();
 				case "record" -> {
-					executor.execute (new Record(args));
+					String name = args[0];
+					editor.startRecording(name);
 				}
 				case "stop" -> { 
-					// ...
+					editor.stopRecording();
 				}
 				case "execute" -> {
-					// String macroName = args[0];
-					// ...
+					String name = args[0];
+					FileCommand macro = editor.getMacros().get(name);
+					if(macro != null){
+						executor.execute(macro);
+					}
 				}
 				default -> {
 					System.out.println("Unknown command");
@@ -59,14 +65,8 @@ public class Main {
 				}
 			}
 
-			System.out.println(text);
+			System.out.println(editor.getText());
 		}
-	}
-
-	//$-- Some individual user commands that do a bit more work ---------------
-
-	private void replace(String[] args) {
-		
 	}
 
 	//$-- Auxiliary methods ---------------------------------------------------

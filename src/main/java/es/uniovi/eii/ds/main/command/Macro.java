@@ -25,6 +25,12 @@ public class Macro implements FileCommand {
     
     @Override
     public void execute(FileEditor editor) {
+
+        if(editor.isRecording()){
+            editor.record(this);
+            return;
+        }
+        
         for (FileCommand command : commands) {
             command.execute(editor);
         }
