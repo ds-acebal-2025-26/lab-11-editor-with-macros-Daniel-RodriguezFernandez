@@ -47,4 +47,8 @@ public class FileEditor {
             currentMacro.addCommand(command);
         }
     }
+
+    public Macro findMacro(String name){
+        return macros.get(name);
+    }
 }

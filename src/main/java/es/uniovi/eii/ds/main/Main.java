@@ -7,6 +7,7 @@ import java.util.Arrays;
 
 import es.uniovi.eii.ds.main.command.Delete;
 import es.uniovi.eii.ds.main.command.Insert;
+import es.uniovi.eii.ds.main.command.Macro;
 import es.uniovi.eii.ds.main.command.OpenFile;
 import es.uniovi.eii.ds.main.command.Replace;
 
@@ -54,7 +55,7 @@ public class Main {
 				}
 				case "execute" -> {
 					String name = args[0];
-					FileCommand macro = editor.getMacros().get(name);
+					Macro macro = editor.findMacro(name);
 					if(macro != null){
 						executor.execute(macro);
 					}
