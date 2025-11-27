@@ -3,12 +3,17 @@ package es.uniovi.eii.ds.main;
 import java.io.*;
 import java.util.Arrays;
 
+import es.uniovi.eii.ds.main.command.Delete;
+import es.uniovi.eii.ds.main.command.Insert;
+import es.uniovi.eii.ds.main.command.OpenFile;
+import es.uniovi.eii.ds.main.command.Replace;
+
 public class Main {
 
     BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 	
-	// Represents the document of the editor.
-	StringBuilder text = new StringBuilder();
+	FileEditor editor = new FileEditor();
+	FileCommandExecutor executor = new FileCommandExecutor(editor);
 
     public static void main(String[] args) {
         new Main().run();
@@ -24,24 +29,22 @@ public class Main {
 			String[] args = command.args;
 
 			switch (command.name) {
-				case "open" -> open(args);
-				case "insert" -> { 
-					for (String word : args) {
-						text.append(" ").append(word);
+				case "open" -> {
+					if(checkArguments(args, 1, "open <file>")){
+						executor.execute(new OpenFile(args));
 					}
 				}
-				case "delete" -> {
-					int indexOfLastWord = text.toString().trim().lastIndexOf(" ");
-					if (indexOfLastWord == -1)
-						text = new StringBuilder("");
-					else
-						text.setLength(indexOfLastWord);
+				case "insert" -> executor.execute(new Insert(args));
+				case "delete" -> executor.execute(new Delete());
+				case "replace" -> {
+					if (checkArguments(args, 2, "replace <find> <replace>")){
+						executor.execute(new Replace(args));
+					}
+
 				}
-				case "replace" -> replace(args);
 				case "help" -> showHelp();
 				case "record" -> {
-					// String macroName = args[0];
-					// ...
+					executor.execute (new Record(args));
 				}
 				case "stop" -> { 
 					// ...
@@ -62,44 +65,8 @@ public class Main {
 
 	//$-- Some individual user commands that do a bit more work ---------------
 
-	private void open(String[] args) {
-		if (!checkArguments(args, 1, "open <file>"))
-			return;
-		try {
-			String filename = args[0];
-			text = new StringBuilder(readFile(filename));
-		} catch (Exception e) {
-			System.out.println("Document could not be opened");
-		}
-	}
-
-	private String readFile(String filename) {
-		InputStream in = getClass().getResourceAsStream("/" + filename);
-		if (in == null)
-			throw new IllegalArgumentException("File not found: " + filename);
-
-		try (BufferedReader input = new BufferedReader(new InputStreamReader(in))) {
-			StringBuilder result = new StringBuilder();
-			String line;
-			boolean firstLine = true;
-			while ((line = input.readLine()) != null) {
-				if (!firstLine)
-					result.append(System.lineSeparator());
-				result.append(line);
-				firstLine = false;
-			}
-			return result.toString();
-		} catch (IOException e) {
-			throw new UncheckedIOException(e);
-		}
-	}
-
 	private void replace(String[] args) {
-		if (!checkArguments(args, 2, "replace <find> <replace>"))
-			return;
-		String find = args[0];
-		String replace = args[1];
-		text = new StringBuilder(text.toString().replace(find, replace));
+		
 	}
 
 	//$-- Auxiliary methods ---------------------------------------------------
